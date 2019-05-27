@@ -1,28 +1,22 @@
 class ListaEncadeada {
 
-    private No primeiro = null;
-    private No ultimo = null;
+    private NodeLista primeiro = null;
+    private NodeLista ultimo = null;
 
-    int tamanho_recursivo(No no, int i){
-        if (no == null) return i;
-        return tamanho_recursivo(no.proximo, ++i);
-    }
-
-    No getPrimeiro() {
+    NodeLista getPrimeiro() {
         return primeiro;
     }
 
-    private boolean vazia(){
+    private boolean vazia() {
         return primeiro == null;
     }
 
-    No inserePrimeiro(int dado){
-        No novo = new No(dado);
-        if(vazia()){
+    NodeLista inserePrimeiro(String dado) {
+        NodeLista novo = new NodeLista(dado);
+        if (vazia()) {
             primeiro = novo;
             ultimo = novo;
-        }
-        else{
+        } else {
             novo.proximo = primeiro;
             primeiro = novo;
         }
@@ -30,41 +24,41 @@ class ListaEncadeada {
         return novo;
     }
 
-    No insereDepois(int dado, No anterior){
-        if(anterior == ultimo) return insereUltimo(dado);
+    NodeLista insereDepois(String dado, NodeLista anterior) {
+        if (anterior == ultimo)
+            return insereUltimo(dado);
 
-        No novo = new No(dado);
+        NodeLista novo = new NodeLista(dado);
         novo.proximo = anterior.proximo;
         anterior.proximo = novo;
         return novo;
     }
 
-    No insereUltimo(int dado){
-        No novo = new No(dado);
-        if(vazia()){
+    NodeLista insereUltimo(String dado) {
+        NodeLista novo = new NodeLista(dado);
+        if (vazia()) {
             primeiro = novo;
             ultimo = novo;
-        }
-        else{
+        } else {
             ultimo.proximo = novo;
             ultimo = novo;
         }
         return novo;
     }
 
-    No insereOrdenado(int dado){
+    NodeLista insereOrdenado(String dado) {
 
-        if(vazia() || primeiro.dado >= dado){
+        if (vazia() || primeiro.dado.compareTo(dado) >= 0) {
             return inserePrimeiro(dado);
         }
 
-        if(ultimo.dado <= dado){
+        if (ultimo.dado.compareTo(dado) <= 0) {
             return insereUltimo(dado);
         }
 
-        No anterior = primeiro;
-        No i = primeiro.proximo;
-        while(i.dado < dado){
+        NodeLista anterior = primeiro;
+        NodeLista i = primeiro.proximo;
+        while (i.dado.compareTo(dado) < 0) {
             anterior = i;
             i = i.proximo;
         }
@@ -73,30 +67,31 @@ class ListaEncadeada {
 
     }
 
-    void mostraLista(){
-        if(vazia()) return;
+    void mostraLista() {
+        if (vazia())
+            return;
 
-        No no = primeiro;
+        NodeLista no = primeiro;
         System.out.print(no.dado);
-        while(no.proximo != null){
+        while (no.proximo != null) {
             no = no.proximo;
-            System.out.print(", "+no.dado);
+            System.out.print(", " + no.dado);
         }
         System.out.println();
     }
 
-    int retiraPrimeiro(){
-        int retorno = primeiro.dado;
+    String retiraPrimeiro() {
+        String retorno = primeiro.dado;
         primeiro = primeiro.proximo;
         return retorno;
     }
 
-    int retiraUltimo(){
+    String retiraUltimo() {
 
-        int retorno = ultimo.dado;
+        String retorno = ultimo.dado;
 
-        No no = primeiro;
-        while(no.proximo != ultimo){
+        NodeLista no = primeiro;
+        while (no.proximo != ultimo) {
             no = no.proximo;
         }
         no.proximo = null;
@@ -105,95 +100,53 @@ class ListaEncadeada {
         return retorno;
     }
 
-    int retiraDepois(No p){
+    String retiraDepois(NodeLista p) {
 
-        if (p == ultimo) return 0;
+        if (p == ultimo)
+            return "";
 
-        int retorno = p.proximo.dado;
+        String retorno = p.proximo.dado;
 
         p.proximo = p.proximo.proximo;
 
         return retorno;
     }
 
-    int ultimoElemento(){
+    String ultimoElemento() {
         return ultimo.dado;
     }
 
-    No encontraElemento(int dado){
-        No no = primeiro;
-        while(no.proximo != null){
-            if(no.dado == dado) return no;
+    NodeLista encontraElemento(String dado) {
+        NodeLista no = primeiro;
+        while (no.proximo != null) {
+            if (no.dado.equals(dado))
+                return no;
             no = no.proximo;
         }
         return null;
     }
 
-    int tamanho(){
-        if (vazia()) return 0;
+    int tamanho() {
+        if (vazia())
+            return 0;
 
-        No no = primeiro;
+        NodeLista no = primeiro;
         int i = 1;
-        while(no.proximo != null){
+        while (no.proximo != null) {
             no = no.proximo;
             i++;
         }
         return i;
     }
 
-    boolean existe(int dado) {
-        No no = primeiro;
+    boolean existe(String dado) {
+        NodeLista no = primeiro;
         while (no != null) {
-            if (dado == no.dado) return true;
+            if (dado.equals(no.dado))
+                return true;
             no = no.proximo;
         }
         return false;
     }
 
-    double similaridade(ListaEncadeada lista){
-        if (tamanho() != lista.tamanho()) return 0;
-
-        No no_1 = primeiro;
-        No no_2 = lista.primeiro;
-
-        double numerador = 0;
-        double denominador_1 = 0;
-        double denominador_2 = 0;
-
-        while(no_1 != null){
-            numerador += no_1.dado * no_2.dado;
-
-            denominador_1 += Math.pow(no_1.dado, 2);
-            denominador_2 += Math.pow(no_2.dado, 2);
-
-            no_1 = no_1.proximo;
-            no_2 = no_2.proximo;
-        }
-
-        return numerador/Math.sqrt(denominador_1*denominador_2);
-    }
-
-    ListaEncadeada interseccao(ListaEncadeada lista){
-
-        ListaEncadeada resultado = new ListaEncadeada();
-
-        No no_a = primeiro;
-        while(no_a != null){
-            No no_b = lista.primeiro;
-            while(no_b != null){
-
-                if (no_a.dado == no_b.dado){
-                    if(!resultado.existe(no_a.dado))
-                    resultado.insereOrdenado(no_a.dado);
-                    break;
-                }
-
-                no_b = no_b.proximo;
-            }
-
-            no_a = no_a.proximo;
-        }
-
-        return resultado;
-    }
 }
